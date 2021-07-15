@@ -7,6 +7,7 @@ app.use(cors());
 app.use(bodyParser.json({limit: '10mb'}));
 
 const { Connection, Request } = require("tedious");
+const TYPES = require("tedious").TYPES;
 
 const config = {
   authentication: {
@@ -19,45 +20,73 @@ const config = {
   server: "dbpipelineserver.database.windows.net",
   options: {
     database: "EniPipeline",
-    encrypt: true
+    encrypt: true,
+    rowCollectionOnRequestCompletion: true
   }
 };
 
-const connection = new Connection(config);
-
 app.get("/environments", async (req, res) => {
-    try {
-        connection.on("connect", err => {
-            if (err) console.log(err);
+    const connection = new Connection(config);
+    connection.on("connect", (err) => {
+            if (err) {
+              console.log(err.message);
+              res.status(500).json({"Error": err.message});
+            }
             else {
-                let result = executeQuery('select name, status, startDate, endDate, teamName from environment join team on environment.teamId = team.teamId;');
-                if (result != null) res.status(200).json(result);
-                else res.sendStatus(500);
+                let query = 'select name, status, startDate, endDate, teamName from environment join team on environment.teamId = team.teamId';
+                const request = new Request(query, (err, rowCount, rows) => {
+                  if (err) res.status(500).json({"Error": err.message});
+                  else {
+                    let tempRes = convertToJsonList(rows);
+                    res.status(200).json(tempRes);
+                  }
+                  connection.close();
+                });
+                connection.execSql(request);
             }
         });
-        connection.connect();
-    } catch (err) {
-        res.status(500).json({"Error": err.message});
-    }
+
+    connection.connect();
 });
 
-function executeQuery(query) {
+app.get("/servers/:environmentId", async (req, res) => {
+  const connection = new Connection(config);
+  connection.on("connect", (err) => {
+          if (err) {
+            console.log(err.message);
+            res.status(500).json({"Error": err.message});
+          }
+          else {
+              let query = 'select name, type, ipAddress from server where environmentId = @id';
+              let params = [{name: 'id', type: TYPES.Int, value: req.params.environmentId}];
+              const request = new Request(query, (err, rowCount, rows) => {
+                if (err) res.status(500).json({"Error": err.message});
+                else {
+                  let tempRes = convertToJsonList(rows);
+                  res.status(200).json(tempRes);
+                }
+                connection.close();
+              });
 
-    const request = new Request(query, (err, rowCount) => {
-        if (err) console.error(err.message);
-        else console.log(`${rowCount} row(s) returned`);
-      }
-    );
-    
-    let ans = [];
+              params.forEach(param => {
+                request.addParameter(param.name, param.type, param.value);
+              });
 
-    request.on("row", columns => {
-        columns.forEach(column => {
-          console.log("%s\t%s", column.metadata.colName, column.value);
-        });
+              connection.execSql(request);
+          }
       });
 
-    connection.execSql(request);
+  connection.connect();
+});
+
+function convertToJsonList(result) {
+    let res = [];
+    for (var row of result) {
+        let item = {};
+        for (var obj of row) item[obj.metadata.colName] = obj.value;
+        res.push(item);
+    }
+    return res;
 }
 
-app.listen(PORT, () => console.log('Listening on port ' + PORT.toString() ));
+app.listen(PORT, () => console.log('Listening on port ' + PORT.toString()));

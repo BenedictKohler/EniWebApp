@@ -25,12 +25,14 @@ class HomeScreen extends React.Component {
     render() {
         return (
             <Container>
-                <h2>ENI Energy Pipeline Controller</h2>
+                <h2>ENI Energy Pipeline Controller {this.set}</h2>
                 <CircularProgress />
             </Container>
         );
     }
 
 }
+
+
 
 export default HomeScreen;
