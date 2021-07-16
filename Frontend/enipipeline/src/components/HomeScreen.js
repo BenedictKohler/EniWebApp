@@ -69,6 +69,7 @@ const EnvironmentTable =  (props) => {
               <TableCell>End Date</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Team</TableCell>
+              <TableCell>Owner</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -79,6 +80,7 @@ const EnvironmentTable =  (props) => {
                 <TableCell>{env.endDate}</TableCell>
                 <TableCell>{env.status}</TableCell>
                 <TableCell>{env.teamName}</TableCell>
+                <TableCell>{env.fullName == null ? "None" : env.fullName}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -23,7 +23,17 @@ create table Environment
     startDate Date,
     endDate Date,
     primary key (environmentId),
-    teamId int FOREIGN key REFERENCES Team (teamId)
+    teamId int FOREIGN key REFERENCES Team (teamId),
+    ownerId int FOREIGN key REFERENCES Person (personId)
+);
+
+create table Pipeline
+(
+    pipelineId int not null identity,
+    armId int,
+    ansibleId int,
+    primary key (pipelineId),
+    environmentId int FOREIGN key REFERENCES Environment (environmentId)
 );
 
 create table Server
@@ -40,7 +50,8 @@ create table Software
 (
     softwareId int not null identity,
     version char(40),
-    name char(40)
+    name char(40),
+    location varchar(150),
     primary key (softwareId),
     serverId int FOREIGN KEY REFERENCES Server (serverId)
 );
@@ -52,7 +63,7 @@ insert into server (name, type, ipAddress, environmentId) values ('Server3', 'VM
 insert into software (version, name, serverId) values ('2.3.0', 'node', 3);
 
 -- Query to get information about all environments
-select name, status, startDate, endDate, teamName from environment join team on environment.teamId = team.teamId;
+select environmentId, fullName, name, status, startDate, endDate, teamName from environment join team on environment.teamId = team.teamId left outer join Person on Environment.ownerId = Person.personId;
 
 -- Gets information about servers on a certain environment
 select name, type, ipAddress from server where environmentId = 1;

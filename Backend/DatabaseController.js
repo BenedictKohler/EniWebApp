@@ -33,7 +33,7 @@ app.get("/environments", async (req, res) => {
               res.status(500).json({"Error": err.message});
             }
             else {
-                let query = 'select environmentId, name, status, startDate, endDate, teamName from environment join team on environment.teamId = team.teamId';
+                let query = 'select environmentId, fullName, name, status, startDate, endDate, teamName from environment join team on environment.teamId = team.teamId left outer join Person on Environment.ownerId = Person.personId';
                 const request = new Request(query, (err, rowCount, rows) => {
                   if (err) res.status(500).json({"Error": err.message});
                   else {
