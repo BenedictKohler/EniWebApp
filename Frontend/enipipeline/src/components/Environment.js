@@ -16,20 +16,20 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
-class HomeScreen extends React.Component {
+class Environment extends React.Component {
 
     constructor(props) {
         super(props);
+        if (this.props.location.environment != null) sessionStorage.setItem('environment', JSON.stringify(this.props.location.environment));
         this.state = {
-            isLoading: true, environments: []
-        }
+            environment: JSON.parse(sessionStorage.getItem('environment')), servers: [], isLoading: true
+        };
     }
 
-    // Get data about environments
     async componentDidMount() {
         try {
-            let result = await DatabaseService.getAllEnvironments();
-            if (result.status === 200) this.setState({isLoading: false, environments: result.data});
+            let result = await DatabaseService.getServersByEnvironmnet(this.state.environment.environmentId);
+            if (result.status === 200) this.setState({isLoading: false, servers: result.data});
         } catch (err) {
             console.log(err);
         }
@@ -37,13 +37,13 @@ class HomeScreen extends React.Component {
 
     render() {
         return (
-          <Container>
-            {!this.state.isLoading && <TopNavBar />}
             <Container>
-                {this.state.isLoading && <CircularProgress />}
-                {!this.state.isLoading && <EnvironmentTable environments={this.state.environments} />}
+                <TopNavBar environment={this.state.environment} />
+                <Container>
+                    {this.state.isLoading && <CircularProgress />}
+                    {!this.state.isLoading && <ServerTable servers={this.state.servers} />}
+                </Container>
             </Container>
-          </Container>
         );
     }
 
@@ -55,7 +55,7 @@ const useStylesTable = makeStyles({
     },
 });
 
-const EnvironmentTable =  (props) => {
+const ServerTable =  (props) => {
 
     const classes = useStylesTable();
   
@@ -64,21 +64,17 @@ const EnvironmentTable =  (props) => {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Environment</TableCell>
-              <TableCell>Start Date</TableCell>
-              <TableCell>End Date</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Team</TableCell>
+              <TableCell>Server</TableCell>
+              <TableCell>Type</TableCell>
+              <TableCell>IP Address</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.environments.map((env) => (
+            {props.servers.map((server) => (
               <TableRow>
-                <TableCell><Link style={{ textDecoration: "none" }} to={{ pathname: "/environment", environment: env }}>{env.name}</Link></TableCell>
-                <TableCell>{env.startDate}</TableCell>
-                <TableCell>{env.endDate}</TableCell>
-                <TableCell>{env.status}</TableCell>
-                <TableCell>{env.teamName}</TableCell>
+                <TableCell><Link style={{ textDecoration: "none" }} to={{ pathname: "/serverSoftware", server: server }}>{server.name}</Link></TableCell>
+                <TableCell>{server.type}</TableCell>
+                <TableCell>{server.ipAddress}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -107,13 +103,13 @@ const TopNavBar = (props) => {
       <Container>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6">Eni Energy</Typography>
-            <Button variant="h6" color="inherit">Create Environment</Button>
+            <Typography variant="h6">{props.environment.name}</Typography>
+            <Button variant="h6" color="inherit">Provision</Button>
+            <Button variant="h6" color="inherit">Configure</Button>
           </Toolbar>
         </AppBar>
       </Container>
     );
   }
 
-
-export default HomeScreen;
+export default Environment;
