@@ -1,16 +1,16 @@
 create table Team 
 (
     teamId int not null identity,
-    teamName char(50),
+    teamName varchar(100),
     primary key (teamId)
 );
 
 create table Person
 (
     personId int not null identity,
-    username char(30) not null,
-    password char(30) not null,
-    fullName char(50),
+    username varchar(100) not null,
+    password varchar(100) not null,
+    fullName varchar(100),
     primary key (personId),
     teamId int FOREIGN key REFERENCES Team (teamId)
 );
@@ -18,8 +18,8 @@ create table Person
 create table Environment
 (
     environmentId int not null identity,
-    name char(50),
-    status char(20),
+    name varchar(100),
+    status varchar(100),
     startDate Date,
     endDate Date,
     primary key (environmentId),
@@ -39,9 +39,9 @@ create table Pipeline
 create table Server
 (
     serverId int not null identity,
-    name char(50),
-    type char(30),
-    ipAddress char(20),
+    name varchar(100),
+    type varchar(100),
+    ipAddress varchar(100),
     primary key (serverId),
     environmentId int FOREIGN key REFERENCES Environment (environmentId)
 );
@@ -49,8 +49,8 @@ create table Server
 create table Software 
 (
     softwareId int not null identity,
-    version char(40),
-    name char(40),
+    version varchar(100),
+    name char(100),
     location varchar(150),
     primary key (softwareId),
     serverId int FOREIGN KEY REFERENCES Server (serverId)
