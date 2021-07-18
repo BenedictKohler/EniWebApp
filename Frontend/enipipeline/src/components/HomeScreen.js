@@ -76,8 +76,8 @@ const EnvironmentTable =  (props) => {
             {props.environments.map((env) => (
               <TableRow>
                 <TableCell><Link style={{ textDecoration: "none" }} to={{ pathname: "/environment", environment: env }}>{env.name}</Link></TableCell>
-                <TableCell>{env.startDate}</TableCell>
-                <TableCell>{env.endDate}</TableCell>
+                <TableCell>{env.startDate == null ? "None" : env.startDate.substring(0, 10)}</TableCell>
+                <TableCell>{env.endDate == null ? "None" : env.endDate.substring(0, 10)}</TableCell>
                 <TableCell>{env.status}</TableCell>
                 <TableCell>{env.teamName}</TableCell>
                 <TableCell>{env.fullName == null ? "None" : env.fullName}</TableCell>
@@ -110,7 +110,7 @@ const TopNavBar = (props) => {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6">Eni Energy</Typography>
-            <Button variant="h6" color="inherit">Create Environment</Button>
+            <Button variant="h6" color="inherit"><Link style={{ textDecoration: 'none', color: 'white' }} to={{ pathname: "/createEnvironment" }}>Create Environment</Link></Button>
           </Toolbar>
         </AppBar>
       </Container>

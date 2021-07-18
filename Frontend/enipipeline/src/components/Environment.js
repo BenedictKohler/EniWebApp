@@ -15,6 +15,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
 
 class Environment extends React.Component {
 
@@ -104,8 +105,8 @@ const TopNavBar = (props) => {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6">{props.environment.name}</Typography>
-            <Button variant="h6" color="inherit">Provision</Button>
-            <Button variant="h6" color="inherit">Configure</Button>
+            <Button variant="h6" color="inherit"><AddIcon /> Add Server</Button>
+            <Button variant="h6" color="inherit">Deploy</Button>
           </Toolbar>
         </AppBar>
       </Container>

@@ -10,7 +10,7 @@ class LoginScreen extends React.Component {
     render() {
         return (
             <Container>
-                <h3>This page is not yet configured. Navigate to /home</h3>
+                <h3>This is going to be login page. Navigate to /home for now.</h3>
             </Container>
         );
     }

@@ -10,6 +10,19 @@ class DatabaseService {
         return await axios.get('http://localhost:8000/servers/' + envId);
     }
 
+    async getAllTeams() {
+        return await axios.get('http://localhost:8000/teams');
+    }
+
+    async getAllUsers() {
+        return await axios.get('http://localhost:8000/users');
+    }
+
+    async addEnvironment(env) {
+        let r = await axios.post('http://localhost:8000/environment', env);
+        return r;
+    }
+
 }
 
 export default new DatabaseService();

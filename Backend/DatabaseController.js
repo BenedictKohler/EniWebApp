@@ -79,6 +79,85 @@ app.get("/servers/:environmentId", async (req, res) => {
   connection.connect();
 });
 
+app.get("/users", async (req, res) => {
+  const connection = new Connection(config);
+  connection.on("connect", (err) => {
+          if (err) {
+            console.log(err.message);
+            res.status(500).json({"Error": err.message});
+          }
+          else {
+              let query = 'select personId, fullName, teamId from Person';
+              const request = new Request(query, (err, rowCount, rows) => {
+                if (err) res.status(500).json({"Error": err.message});
+                else {
+                  let tempRes = convertToJsonList(rows);
+                  res.status(200).json(tempRes);
+                }
+                connection.close();
+              });
+              connection.execSql(request);
+          }
+      });
+
+  connection.connect();
+});
+
+app.get("/teams", async (req, res) => {
+  const connection = new Connection(config);
+  connection.on("connect", (err) => {
+          if (err) {
+            console.log(err.message);
+            res.status(500).json({"Error": err.message});
+          }
+          else {
+              let query = 'select teamId, teamName from Team';
+              const request = new Request(query, (err, rowCount, rows) => {
+                if (err) res.status(500).json({"Error": err.message});
+                else {
+                  let tempRes = convertToJsonList(rows);
+                  res.status(200).json(tempRes);
+                }
+                connection.close();
+              });
+              connection.execSql(request);
+          }
+      });
+
+  connection.connect();
+});
+
+app.post("/environment", async (req, res) => {
+  const connection = new Connection(config);
+  connection.on("connect", (err) => {
+          if (err) {
+            console.log(err.message);
+            res.status(500).json({"Error": err.message});
+          }
+          else {
+              let query = 'insert into Environment (name, status, teamId, ownerId) values (@name, @status, @teamId, @ownerId)';
+              let params = [{name: 'name', type: TYPES.VarChar, value: req.body.name}, {name: 'status', type: TYPES.VarChar, value: req.body.status},
+              {name: 'teamId', type: TYPES.Int, value: req.body.teamId}, {name: 'ownerId', type: TYPES.Int, value: req.body.ownerId}];
+              const request = new Request(query, (err, rowCount, rows) => {
+                if (err) res.status(500).json({"Error": err.message});
+                else {
+                  let tempRes = convertToJsonList(rows);
+                  res.status(200).json(tempRes);
+                }
+                connection.close();
+              });
+
+              params.forEach(param => {
+                request.addParameter(param.name, param.type, param.value);
+              });
+
+              connection.execSql(request);
+          }
+      });
+
+  connection.connect();
+});
+
 function convertToJsonList(result) {
     let res = [];
     for (var row of result) {
