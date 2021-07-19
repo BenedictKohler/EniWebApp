@@ -106,7 +106,7 @@ const TopNavBar = (props) => {
           <Toolbar>
             <Typography variant="h6">{props.environment.name}</Typography>
             <Button variant="h6" color="inherit"><AddIcon /> Add Server</Button>
-            <Button variant="h6" color="inherit">Deploy</Button>
+            <Button onClick={() => DatabaseService.deployEnvironment()} variant="h6" color="inherit">Deploy</Button>
           </Toolbar>
         </AppBar>
       </Container>

@@ -50,7 +50,7 @@ create table Software
 (
     softwareId int not null identity,
     version varchar(100),
-    name char(100),
+    name varchar(150),
     location varchar(150),
     primary key (softwareId),
     serverId int FOREIGN KEY REFERENCES Server (serverId)
