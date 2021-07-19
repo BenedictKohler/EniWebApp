@@ -23,13 +23,15 @@ class DatabaseService {
     }
 
     async getSoftwareByServerId(serverId) {
-        let r = await axios.get('http://localhost:8000/software/' + serverId);
-        return r;
+        return await axios.get('http://localhost:8000/software/' + serverId);
     }
 
     async getAllSoftware() {
-        let r = await axios.get('http://localhost:8000/software');
-        return r;
+        return await axios.get('http://localhost:8000/software');
+    }
+
+    async addServer(server) {
+        return await axios.post('http://localhost:8000/server', server);
     }
 
     async deployEnvironment() {

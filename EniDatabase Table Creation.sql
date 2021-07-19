@@ -62,6 +62,7 @@ insert into environment (name, status, startDate, endDate, teamId) values ('Env2
 insert into server (name, type, ipAddress, environmentId) values ('Server3', 'VM', '109.02.1.6', 2);
 insert into software (version, name, serverId) values ('2.3.0', 'node', 3);
 
+
 -- Query to get information about all environments
 select environmentId, fullName, name, status, startDate, endDate, teamName from environment join team on environment.teamId = team.teamId left outer join Person on Environment.ownerId = Person.personId;
 

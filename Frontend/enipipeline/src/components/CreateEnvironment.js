@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Container, Grid, TextField, Box, Paper, Typography, Menu, MenuItem, CircularProgress } from '@material-ui/core';
+import { Button, Container, Grid, TextField, Box, Paper, Typography, Menu, MenuItem, CircularProgress, makeStyles } from '@material-ui/core';
 import StorageIcon from '@material-ui/icons/Storage';
 import DatabaseService from '../services/DatabaseService';
 import { Redirect } from 'react-router-dom';
@@ -167,7 +167,7 @@ class CreateEnvironment extends React.Component {
                             <Grid xs={4}></Grid>
                             <Grid item xs={4}>
                                 <Container>
-                                    <Button onClick={this.addEnvironment} fullWidth variant="contained" color="primary">Create</Button>
+                                    <CreateButton addEnvironment={this.addEnvironment} />
                                 </Container>
                             </Grid>
                         </Grid>
@@ -186,6 +186,29 @@ class CreateEnvironment extends React.Component {
         );
     }
 }
+
+// <Button background='linear-gradient(45deg, #98c1d9 280%, #e0fbfc 90%)' color="primary" onClick={this.addEnvironment} fullWidth variant="contained">Create</Button>
+
+const useStyles = makeStyles((theme) => ({
+    button: {
+      background:'linear-gradient(45deg, #98c1d9 280%, #e0fbfc 90%)'
+    },
+  }));
+
+const CreateButton = (props) => {
+
+    const classes = useStyles();
+  
+    return (
+      <Container>
+        <Box>
+            <Grid container justify="flex-start">
+              <Button fullWidth className={classes.button} onClick={props.addEnvironment} variant="contained" color="primary">Create</Button>
+            </Grid> 
+          </Box>
+      </Container>
+    );
+  }
 
 const TeamMenu = (props) => {
 
