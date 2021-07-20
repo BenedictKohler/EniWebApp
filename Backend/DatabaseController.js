@@ -49,6 +49,30 @@ app.get("/environments", async (req, res) => {
     connection.connect();
 });
 
+app.get("/serverTypes", async (req, res) => {
+  const connection = new Connection(config);
+  connection.on("connect", (err) => {
+          if (err) {
+            console.log(err.message);
+            res.status(500).json({"Error": err.message});
+          }
+          else {
+              let query = 'select serverTypeId, serverType from servertype';
+              const request = new Request(query, (err, rowCount, rows) => {
+                if (err) res.status(500).json({"Error": err.message});
+                else {
+                  let tempRes = convertToJsonList(rows);
+                  res.status(200).json(tempRes);
+                }
+                connection.close();
+              });
+              connection.execSql(request);
+          }
+      });
+
+  connection.connect();
+});
+
 app.get("/servers/:environmentId", async (req, res) => {
   const connection = new Connection(config);
   connection.on("connect", (err) => {
@@ -57,7 +81,7 @@ app.get("/servers/:environmentId", async (req, res) => {
             res.status(500).json({"Error": err.message});
           }
           else {
-              let query = 'select serverId, name, type, ipAddress from server where environmentId = @id';
+              let query = 'select Server.serverTypeId, serverId, name, serverType, ipAddress from Server join ServerType on Server.serverTypeId = ServerType.serverTypeId where environmentId = @id';
               let params = [{name: 'id', type: TYPES.Int, value: req.params.environmentId}];
               const request = new Request(query, (err, rowCount, rows) => {
                 if (err) res.status(500).json({"Error": err.message});
@@ -189,8 +213,8 @@ app.post("/server", async (req, res) => {
             res.status(500).json({"Error": err.message});
           }
           else {
-              let query = 'insert into server (name, type, ipAddress, environmentId) values (@name, @type, @ip, @envId)';
-              let params = [{name: 'name', type: TYPES.VarChar, value: req.body.name}, {name: 'type', type: TYPES.VarChar, value: req.body.type},
+              let query = 'insert into server (name, serverTypeId, ipAddress, environmentId) values (@name, @id, @ip, @envId)';
+              let params = [{name: 'name', type: TYPES.VarChar, value: req.body.name}, {name: 'id', type: TYPES.Int, value: req.body.serverTypeId},
               {name: 'ip', type: TYPES.VarChar, value: req.body.ipAddress}, {name: 'envId', type: TYPES.Int, value: req.body.environmentId}];
               const request = new Request(query, (err, rowCount, rows) => {
                 if (err) res.status(500).json({"Error": err.message});

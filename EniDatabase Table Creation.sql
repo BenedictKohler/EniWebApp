@@ -36,14 +36,22 @@ create table Pipeline
     environmentId int FOREIGN key REFERENCES Environment (environmentId)
 );
 
+create table ServerType
+(
+    serverTypeId int not null IDENTITY,
+    serverType varchar(100),
+    primary key (serverTypeId)
+);
+
+
 create table Server
 (
     serverId int not null identity,
     name varchar(100),
-    type varchar(100),
     ipAddress varchar(100),
     primary key (serverId),
-    environmentId int FOREIGN key REFERENCES Environment (environmentId)
+    environmentId int FOREIGN key REFERENCES Environment (environmentId),
+    serverTypeId int FOREIGN key REFERENCES ServerType (serverTypeId)
 );
 
 create table Software 
@@ -55,6 +63,7 @@ create table Software
     primary key (softwareId),
     serverId int FOREIGN KEY REFERENCES Server (serverId)
 );
+
 
 insert into team (teamName) values ('Ansible');
 insert into person (username, password, fullName, teamId) values ('michael', '1234', 'Michael Olutunji', 1);

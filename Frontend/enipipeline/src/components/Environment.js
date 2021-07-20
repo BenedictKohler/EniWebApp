@@ -1,8 +1,8 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Typography, AppBar, CssBaseline, Toolbar, Drawer, Table, TableBody, TableCell, TableContainer, Button, Modal, Fade, TextField } from '@material-ui/core';
-import { TableHead, TableRow, Paper, Box, makeStyles, withStyles, List, Divider, ListItem, ListItemIcon, ListItemText, Grid, Backdrop } from '@material-ui/core';
+import { Typography, AppBar, CssBaseline, Toolbar, Drawer, Table, TableBody, TableCell, TableContainer, Button, Modal, Fade, TextField, Menu } from '@material-ui/core';
+import { TableHead, TableRow, Paper, Box, makeStyles, withStyles, List, Divider, ListItem, ListItemIcon, ListItemText, Grid, Backdrop, MenuItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import DatabaseService from '../services/DatabaseService';
@@ -14,15 +14,16 @@ class Environment extends React.Component {
     super(props);
     if (this.props.location.environment != null) sessionStorage.setItem('environment', JSON.stringify(this.props.location.environment));
     this.state = {
-      environment: JSON.parse(sessionStorage.getItem('environment')), servers: [], isLoading: true
+      environment: JSON.parse(sessionStorage.getItem('environment')), servers: [], isLoading: true, serverTypes: []
     };
   }
 
 
   async componentDidMount() {
     try {
-      let result = await DatabaseService.getServersByEnvironmnet(this.state.environment.environmentId);
-      if (result.status === 200) this.setState({ isLoading: false, servers: result.data });
+      let result1 = await DatabaseService.getServersByEnvironmnet(this.state.environment.environmentId);
+      let result2 = await DatabaseService.getAllServerTypes();
+      if (result1.status === 200 && result2.status === 200) this.setState({ isLoading: false, servers: result1.data, serverTypes: result2.data });
     } catch (err) {
       console.log(err);
     }
@@ -31,7 +32,7 @@ class Environment extends React.Component {
   render() {
     return (
       <Container>
-        {!this.state.isLoading && <TopNavBar environment={this.state.environment} />}
+        {!this.state.isLoading && <TopNavBar serverTypes={this.state.serverTypes} environment={this.state.environment} />}
         <Container>
           {this.state.isLoading && <CircularProgress />}
           {!this.state.isLoading && <ServerTable servers={this.state.servers} />}
@@ -138,7 +139,7 @@ const ServerTable = (props) => {
             {props.servers.map((server) => (
               <TableRow>
                 <TableCell align="left"><Link style={{ textDecoration: "none" }} to={{ pathname: "/serverSoftware", server: server }}>{server.name}</Link></TableCell>
-                <TableCell align="left">{server.type}</TableCell>
+                <TableCell align="left">{server.serverType}</TableCell>
                 <TableCell align="left">{server.ipAddress}</TableCell>
               </TableRow>
             ))}
@@ -205,7 +206,7 @@ const TopNavBar = (props) => {
   const [open, setOpen] = React.useState(false);
   const [serverName, setName] = React.useState("");
   const [ipAddress, setIP] = React.useState("");
-  const [serverType, setType] = React.useState("");
+  const [serverType, setType] = React.useState({ type: "Select Server Type", id: -1 });
 
   const handleOpen = () => {
     setOpen(true);
@@ -215,11 +216,15 @@ const TopNavBar = (props) => {
     setOpen(false);
   };
 
+  const updateServerType = (sType) => {
+    setType({type: sType.serverType, id: sType.serverTypeId})
+  }
+
   const validateAndSend = () => {
     if (serverName.length == 0) return;
     if (ipAddress.length == 0) return;
-    if (serverType.length == 0) return;
-    DatabaseService.addServer({ name: serverName, ipAddress: ipAddress, type: serverType, environmentId: props.environment.environmentId }).then(() => {
+    if (serverType.id == -1) return;
+    DatabaseService.addServer({ name: serverName, ipAddress: ipAddress, serverTypeId: serverType.id, environmentId: props.environment.environmentId }).then(() => {
       window.location.reload();
     });
   }
@@ -266,24 +271,15 @@ const TopNavBar = (props) => {
                     <TextField
                       required
                       variant="outlined"
-                      label="Server Type"
-                      fullWidth
-                      id="outlined-basic"
-                      onChange={e => setType(e.target.value)}
-                    />
-                  </Container>
-
-                  <Box m={3} />
-                  <Container>
-                    <TextField
-                      required
-                      variant="outlined"
                       label="IP Address"
                       fullWidth
                       id="outlined-basic"
                       onChange={e => setIP(e.target.value)}
                     />
                   </Container>
+
+                  <Box m={3} />
+                  {<ServerTypeMenu serverTypes={props.serverTypes} serverType={serverType} updateServerType={updateServerType} />}
 
                   <Box m={3} />
                   <Grid container>
@@ -304,6 +300,38 @@ const TopNavBar = (props) => {
         </AppBar>
       </Box>
     </Container>
+  );
+}
+
+const ServerTypeMenu = (props) => {
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+  };
+
+  let serverTypes = [];
+
+  for (let i = 0; i < props.serverTypes.length; i++) {
+      serverTypes.push(
+          <MenuItem onClick={() => { setAnchorEl(null); props.updateServerType(props.serverTypes[i]) }}>{props.serverTypes[i].serverType}</MenuItem>
+      );
+  }
+
+  return (
+      <Container>
+          <Button fullWidth variant="outlined" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>{props.serverType.type}</Button>
+          <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={() => { setAnchorEl(null) }}
+          >
+              {serverTypes}
+          </Menu>
+      </Container>
   );
 }
 

@@ -14,6 +14,10 @@ class DatabaseService {
         return await axios.get('http://localhost:8000/teams');
     }
 
+    async getAllServerTypes() {
+        return await axios.get('http://localhost:8000/serverTypes');
+    }
+
     async getAllUsers() {
         return await axios.get('http://localhost:8000/users');
     }
