@@ -25,6 +25,27 @@ const config = {
   }
 };
 
+// Execute a shell script
+const { exec } = require('child_process');
+
+app.get("/temp", async (req, res) => {
+
+  exec('ls -lh', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`error: ${error.message}`);
+      return;
+    }
+
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return;
+    }
+
+    console.log(`stdout:\n${stdout}`);
+  });
+
+});
+
 app.get("/environments", async (req, res) => {
     const connection = new Connection(config);
     connection.on("connect", (err) => {
@@ -216,6 +237,36 @@ app.post("/server", async (req, res) => {
               let query = 'insert into server (name, serverTypeId, ipAddress, environmentId) values (@name, @id, @ip, @envId)';
               let params = [{name: 'name', type: TYPES.VarChar, value: req.body.name}, {name: 'id', type: TYPES.Int, value: req.body.serverTypeId},
               {name: 'ip', type: TYPES.VarChar, value: req.body.ipAddress}, {name: 'envId', type: TYPES.Int, value: req.body.environmentId}];
+              const request = new Request(query, (err, rowCount, rows) => {
+                if (err) res.status(500).json({"Error": err.message});
+                else {
+                  res.sendStatus(200);
+                }
+                connection.close();
+              });
+
+              params.forEach(param => {
+                request.addParameter(param.name, param.type, param.value);
+              });
+
+              connection.execSql(request);
+          }
+      });
+
+  connection.connect();
+});
+
+app.post("/software", async (req, res) => {
+  const connection = new Connection(config);
+  connection.on("connect", (err) => {
+          if (err) {
+            console.log(err.message);
+            res.status(500).json({"Error": err.message});
+          }
+          else {
+              let query = 'insert into software (name, version, location, serverId) values (@name, @version, @location, @serverId)';
+              let params = [{name: 'name', type: TYPES.VarChar, value: req.body.name}, {name: 'version', type: TYPES.VarChar, value: req.body.version},
+              {name: 'location', type: TYPES.VarChar, value: req.body.location}, {name: 'serverId', type: TYPES.Int, value: req.body.serverId}];
               const request = new Request(query, (err, rowCount, rows) => {
                 if (err) res.status(500).json({"Error": err.message});
                 else {

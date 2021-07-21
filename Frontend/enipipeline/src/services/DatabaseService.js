@@ -26,6 +26,10 @@ class DatabaseService {
         return await axios.post('http://localhost:8000/environment', env);
     }
 
+    async addSoftware(software) {
+        return await axios.post('http://localhost:8000/software', software);
+    }
+
     async getSoftwareByServerId(serverId) {
         return await axios.get('http://localhost:8000/software/' + serverId);
     }
