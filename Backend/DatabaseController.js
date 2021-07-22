@@ -26,11 +26,13 @@ const config = {
 };
 
 // Execute a shell script
-const { exec } = require('child_process');
+const { exec, spawn, execFile } = require('child_process');
 
-app.get("/temp", async (req, res) => {
 
-  exec('ls -lh', (error, stdout, stderr) => {
+// exec launches shell and returns all the ouput at the end
+app.get("/exec", async (req, res) => {
+
+  exec('ls', (error, stdout, stderr) => {
     if (error) {
       console.error(`error: ${error.message}`);
       return;
@@ -42,6 +44,62 @@ app.get("/temp", async (req, res) => {
     }
 
     console.log(`stdout:\n${stdout}`);
+
+    res.status(200).json({"Shell output": stdout});
+
+  });
+
+});
+
+app.get("/execFileLinux", async (req, res) => {
+
+  // Had to first do chmod u+x filename
+  execFile(__dirname + '/Hello.sh', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`error: ${error.message}`);
+      return;
+    }
+  
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return;
+    }
+  
+    console.log(`stdout:\n${stdout}`);
+  });
+
+});
+
+app.get("/execFileWindows", async (req, res) => {
+
+  // Had to first do chmod u+x filename
+  execFile(__dirname + '/Hello.bat', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`error: ${error.message}`);
+      return;
+    }
+  
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return;
+    }
+  
+    console.log(`stdout:\n${stdout}`);
+  });
+
+});
+
+// spawn doesn't launch shell and it returns data through streams
+app.get("/spawn", async (req, res) => {
+
+  const child = spawn('ls');
+
+  child.stdout.on('data', (data) => {
+    console.log(`child stdout:\n${data}`);
+  });
+  
+  child.stderr.on('data', (data) => {
+    console.error(`child stderr:\n${data}`);
   });
 
 });
