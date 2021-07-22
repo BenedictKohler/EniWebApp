@@ -23,7 +23,9 @@ class DatabaseService {
     }
 
     async addEnvironment(env) {
-        return await axios.post('http://localhost:8000/environment', env);
+        let environmentId =  (await axios.post('http://localhost:8000/environment', env)).data.environmentId;
+        env.environmentId = environmentId;
+        return await axios.post('http://localhost:8000/pipeline', env);
     }
 
     async addSoftware(software) {
