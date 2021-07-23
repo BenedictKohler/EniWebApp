@@ -1,78 +1,53 @@
 import axios from 'axios';
 
+const axiosInstance = axios.create({
+    baseURL: 'http://localhost:8000/'
+});
+
 class DatabaseService {
 
     async getAllEnvironments() {
-        return await axios.get('http://localhost:8000/environments');
+        return await axiosInstance.get('environments');
     }
 
     async getServersByEnvironmnet(envId) {
-        return await axios.get('http://localhost:8000/servers/' + envId);
+        return await axiosInstance.get('servers/' + envId);
     }
 
     async getAllTeams() {
-        return await axios.get('http://localhost:8000/teams');
+        return await axiosInstance.get('teams');
     }
 
     async getAllServerTypes() {
-        return await axios.get('http://localhost:8000/serverTypes');
+        return await axiosInstance.get('serverTypes');
     }
 
     async getAllUsers() {
-        return await axios.get('http://localhost:8000/users');
+        return await axiosInstance.get('users');
     }
 
     async addEnvironment(env) {
-        let environmentId =  (await axios.post('http://localhost:8000/environment', env)).data.environmentId;
+        let environmentId =  (await axiosInstance.post('environment', env)).data.environmentId;
         env.environmentId = environmentId;
-        return await axios.post('http://localhost:8000/pipeline', env);
+        return await axiosInstance.post('pipeline', env);
     }
 
     async addSoftware(software) {
-        return await axios.post('http://localhost:8000/software', software);
+        return await axiosInstance.post('software', software);
     }
 
     async getSoftwareByServerId(serverId) {
-        return await axios.get('http://localhost:8000/software/' + serverId);
+        return await axiosInstance.get('software/' + serverId);
     }
 
     async getAllSoftware() {
-        return await axios.get('http://localhost:8000/software');
+        return await axiosInstance.get('software');
     }
 
     async addServer(server) {
-        return await axios.post('http://localhost:8000/server', server);
-    }
-
-    async deployEnvironment() {
-        let body = {
-            "resources": {
-                "pipelines": {
-                    "version": "1.0.0"
-                }
-            },
-            "variables": {
-                "Message": {"value": "Test Variable"}
-            }
-        };
-
-        let auth = {
-            headers: {"Authorization": "Basic YmtvaGxlcjp1a2RqY3lrM21obnFxcGE1Z3VhZzZ2ZGl6d2NocjNqbTdqb2JzcGxnYXJ6Y21pam9qdm9h"}
-        };
-        try {
-            return await axios.post('https://dev.azure.com/benkohler/ARMPipeline/_apis/pipelines/4/runs?api-version=6.0-preview.1', body, auth);
-        }
-        catch (err) {
-            console.log(err.message);
-        }
+        return await axiosInstance.post('server', server);
     }
 
 }
-
-// Access token: ukdjcyk3mhnqqpa5guag6vdizwchr3jm7jobsplgarzcmijojvoa   but need to encode in base64 to put into header
-// Get: https://dev.azure.com/benkohler/ARMPipeline/_apis/pipelines/9/runs/7?api-version=6.0-preview.1
-
-// Note: 4 is definitonId and pipelineId
-// Any username can be used in auth but must use token as password
 
 export default new DatabaseService();
