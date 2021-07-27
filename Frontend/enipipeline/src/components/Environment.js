@@ -6,6 +6,7 @@ import { TableHead, TableRow, Paper, Box, makeStyles, withStyles, List, Divider,
 import { Link } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import DatabaseService from '../services/DatabaseService';
+import PipelineService from '../services/PipelineService';
 
 
 class Environment extends React.Component {
@@ -295,7 +296,7 @@ const TopNavBar = (props) => {
               </Fade>
             </Modal>
 
-            <Button onClick={() => DatabaseService.deployEnvironment()} variant="h6" color="inherit">Deploy</Button>
+            <Button onClick={() => PipelineService.deployEnvironment()} variant="h6" color="inherit">Deploy</Button>
           </Toolbar>
         </AppBar>
       </Box>

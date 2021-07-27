@@ -1,11 +1,22 @@
 {
-    "name": "enipipeline-backend",
-    "version": "1.0.0",
-    "description": "Node.js Backend",
-    "main": "server.js",
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "None",
-    "license": "ISC"
+  "name": "enipipeline-backend",
+  "version": "1.0.0",
+  "description": "Node.js Backend",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "None",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "node-ssh-exec": "^0.1.1",
+    "remote-exec": "0.0.3",
+    "simple-ssh": "^1.0.0",
+    "ssh-exec": "^2.0.0",
+    "ssh2": "^1.1.0",
+    "tedious": "^11.4.0"
   }
+}
