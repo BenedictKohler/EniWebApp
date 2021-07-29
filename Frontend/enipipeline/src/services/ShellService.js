@@ -14,6 +14,10 @@ class ShellService {
         return await axiosInstance.get('linux');
     }
 
+    async getRunningServices() {
+        return await axiosInstance.get('runningServices');
+    }
+
 }
 
 export default new ShellService();

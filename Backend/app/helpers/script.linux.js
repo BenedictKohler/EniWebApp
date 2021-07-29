@@ -109,5 +109,30 @@ exports.executeFile = (req, res) => {
 
       res.status(200).json({ "Shell output": stdout });
     }
-  ); */
+  );
+
+    execFile(__dirname + '/Hello.bat', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`error: ${error.message}`);
+      return;
+    }
+  
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return;
+    }
+  
+    console.log(`stdout:\n${stdout}`);
+  });
+
+  const child = spawn('ls');
+
+  child.stdout.on('data', (data) => {
+    console.log(`child stdout:\n${data}`);
+  });
+  
+  child.stderr.on('data', (data) => {
+    console.error(`child stderr:\n${data}`);
+  });*/
+
 };
