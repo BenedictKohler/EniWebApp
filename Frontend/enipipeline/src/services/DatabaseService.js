@@ -9,6 +9,14 @@ class DatabaseService {
     async getAllEnvironments() {
         return await axiosInstance.get('environments');
     }
+   
+    async updateEnvironment(newEnvInfo) {
+        return await axiosInstance.put('environment', newEnvInfo);
+    }
+
+    async addUserPermission(userPermission) {
+        return await axiosInstance.post('userPermission', userPermission);
+    }
 
     async getServersByEnvironmnet(envId) {
         return await axiosInstance.get('servers/' + envId);

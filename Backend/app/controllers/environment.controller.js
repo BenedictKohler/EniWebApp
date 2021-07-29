@@ -27,3 +27,17 @@ exports.addEnvironment = (req, res) => {
     });
 
 };
+
+// Update environment
+exports.updateEnvironment = (req, res) => {
+
+  Environment.updateEnvironment(req.body, (err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while updating an environment."
+        });
+      else res.status(200).json(data);
+    });
+
+};

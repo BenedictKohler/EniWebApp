@@ -8,4 +8,7 @@ module.exports = app => {
     // Add new Environment
     app.post("/environment", environment.addEnvironment);
 
+    // Update environment
+    app.put("/environment", environment.updateEnvironment);
+
   };

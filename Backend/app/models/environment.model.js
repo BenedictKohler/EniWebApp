@@ -52,4 +52,27 @@ Environment.addEnvironment = (env, result) => {
     connection.execSql(request);
 }
 
+Environment.updateEnvironment = (env, result) => {
+    let query = 'update Environment set name = @name, status = @status, startDate = @startDate, endDate = @endDate, teamId = @teamId, ownerId = @ownerId where environmentId = @environmentId';
+    let params = [{name: 'name', type: TYPES.VarChar, value: env.name}, {name: 'status', type: TYPES.VarChar, value: env.status}, {name: 'startDate', type: TYPES.Date, value: env.startDate},
+    {name: 'endDate', type: TYPES.Date, value: env.endDate}, {name: 'teamId', type: TYPES.Int, value: env.teamId}, {name: 'ownerId', type: TYPES.Int, value: env.ownerId}, {name: 'environmentId', type: TYPES.Int, value: env.environmentId}];
+    
+    const request = new Request(query, (err, rowCount, rows) => {
+        if (err) {
+            console.log("Error in Environment model: " + err.message);
+            result(null, err);
+            return;
+        }
+        else {
+            result(null, {environmentId: env.environmentId});
+        }
+    });
+
+    params.forEach(param => {
+        request.addParameter(param.name, param.type, param.value);
+    });
+
+    connection.execSql(request);
+}
+
 module.exports = Environment;
