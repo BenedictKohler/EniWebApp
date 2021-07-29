@@ -3,7 +3,7 @@ const UserPermission = require('../models/userpermission.model.js');
 // Add user permission to the database
 exports.addUserPermission = (req, res) => {
 
-    User.addUserPermission((err, data) => {
+    UserPermission.addUserPermission(req.body, (err, data) => {
         if (err)
           res.status(500).send({
             message:
