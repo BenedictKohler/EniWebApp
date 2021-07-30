@@ -13,3 +13,19 @@ exports.getAll = (req, res) => {
       });
   
 };
+
+
+// Adds a new server type
+exports.addServerType = (req, res) => {
+
+  ServerType.addServerType(req.body, (err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while adding a servertype."
+        });
+      else res.status(200).json(data);
+    });
+
+};
+

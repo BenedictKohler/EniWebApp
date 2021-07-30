@@ -5,4 +5,7 @@ module.exports = app => {
     // Retrieve all ServerTypes
     app.get("/serverTypes", servertype.getAll);
 
+    // Adds a new server type
+    app.post("/serverType", servertype.addServerType);
+
   };
