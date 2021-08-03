@@ -1,7 +1,7 @@
 const connection = require('./db.js');
 const { Request } = require('tedious');
 const TYPES = require("tedious").TYPES;
-const Helper = require('../helpers/Helper.js');
+const Utils = require('../utils/Utils.js');
 
 const Environment = (env) => {
     this.name = env.name;
@@ -13,7 +13,7 @@ const Environment = (env) => {
 }
 
 Environment.getAll = result => {
-    let query = 'select environmentId, fullName, name, status, startDate, endDate, teamName from environment join team on environment.teamId = team.teamId left outer join Person on Environment.ownerId = Person.personId';
+    let query = 'select environmentId, fullName, name, status, startDate, endDate, teamName from environment left outer join team on environment.teamId = team.teamId left outer join Person on Environment.ownerId = Person.personId';
     const request = new Request(query, (err, rowCount, rows) => {
         if (err) {
             console.log("Error in Environment model: " + err.message);
@@ -21,7 +21,7 @@ Environment.getAll = result => {
             return;
         }
         else {
-          let res = Helper.convertToJsonList(rows);
+          let res = Utils.convertToJsonList(rows);
           result(null, res);
         }
     });

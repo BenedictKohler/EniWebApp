@@ -20,6 +20,7 @@ require('./app/routes/user.routes.js')(app);
 require('./app/routes/team.routes.js')(app);
 require('./app/routes/pipeline.routes.js')(app);
 require('./app/routes/userpermission.routes.js')(app);
+require('./app/routes/environmentVariables.routes.js')(app);
 require('./app/routes/scripts.routes.js')(app);
 
 // Listen for requests

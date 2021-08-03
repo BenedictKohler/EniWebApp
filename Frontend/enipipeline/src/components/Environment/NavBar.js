@@ -3,6 +3,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { useState } from "react";
 import DatabaseService from "../../services/DatabaseService";
 import PipelineService from '../../services/PipelineService';
+import FilterServersMenu from "./FilterServersMenu";
 import ServerTypeMenu from "./ServerTypeMenu";
 import { environmentStyles } from "./Styles";
 
@@ -102,6 +103,8 @@ const NavBar = (props) => {
                   </Container>
                 </Fade>
               </Modal>
+
+              {<FilterServersMenu availableTypes={props.availableTypes} selectType={props.selectType} />}
   
               <Button onClick={() => PipelineService.deployEnvironment()} variant="h6" color="inherit">Deploy</Button>
             </Toolbar>

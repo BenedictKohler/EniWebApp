@@ -14,8 +14,20 @@ class ShellService {
         return await axiosInstance.get('linux');
     }
 
-    async getRunningServices() {
-        return await axiosInstance.get('runningServices');
+    async getServiceStatus(data) {
+        return await axiosInstance.post('serviceStatus', data);
+    }
+
+    async getServerStatus(serverList) {
+        return await axiosInstance.post('serverStatus', serverList);
+    }
+
+    async startServices(data) {
+        return await axiosInstance.post('startServices', data);
+    }
+
+    async stopServices(data) {
+        return await axiosInstance.post('stopServices', data);
     }
 
 }

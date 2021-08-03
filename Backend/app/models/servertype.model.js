@@ -1,7 +1,7 @@
 const connection = require('./db.js');
 const { Request } = require('tedious');
 const TYPES = require("tedious").TYPES;
-const Helper = require('../helpers/Helper.js');
+const Utils = require('../utils/Utils.js');
 
 const ServerType = (st) => {
     this.serverType = st.serverType;
@@ -16,7 +16,7 @@ ServerType.getAll = result => {
             return;
         }
         else {
-          let res = Helper.convertToJsonList(rows);
+          let res = Utils.convertToJsonList(rows);
           result(null, res);
         }
     });

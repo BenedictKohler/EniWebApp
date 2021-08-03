@@ -1,7 +1,7 @@
 const connection = require('./db.js');
 const { Request } = require('tedious');
 const TYPES = require("tedious").TYPES;
-const Helper = require('../helpers/Helper.js');
+const Utils = require('../utils/Utils.js');
 
 const Team = (team) => {
     this.teamName = team.teamName;
@@ -16,7 +16,7 @@ Team.getAll = result => {
             return;
         }
         else {
-          let res = Helper.convertToJsonList(rows);
+          let res = Utils.convertToJsonList(rows);
           result(null, res);
         }
     });

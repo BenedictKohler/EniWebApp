@@ -1,4 +1,4 @@
-class Helper {
+class Utils {
 
     convertToJsonList(result) {
         let res = [];
@@ -10,7 +10,7 @@ class Helper {
         return res;
     }
 
-    formatRunningServices(info) {
+    formatServiceStatus(info) {
         let json = [];
         let lines = (info.split("\n")).slice(2);
         for (var line of lines) {
@@ -30,6 +30,15 @@ class Helper {
         return json;
     }
 
+    // Converts a list of servers to a comma separated string of servers
+    convertServerList(serverList) {
+        let res = "";
+        for (let server of serverList) {
+            res += server + ",";
+        }
+        return res.substring(0, res.length-1);
+    }
+
 }
 
-module.exports = new Helper();
+module.exports = new Utils();

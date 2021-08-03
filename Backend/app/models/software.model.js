@@ -1,7 +1,7 @@
 const connection = require('./db.js');
 const { Request } = require('tedious');
 const TYPES = require("tedious").TYPES;
-const Helper = require('../helpers/Helper.js');
+const Utils = require('../utils/Utils.js');
 
 const Software = (software) => {
     this.name = software.name;
@@ -19,7 +19,7 @@ Software.getAll = result => {
             return;
         }
         else {
-          let res = Helper.convertToJsonList(rows);
+          let res = Utils.convertToJsonList(rows);
           result(null, res);
         }
     });
@@ -37,7 +37,7 @@ Software.getAllByServerId = (serverId, result) => {
             return;
         }
         else {
-          let res = Helper.convertToJsonList(rows);
+          let res = Utils.convertToJsonList(rows);
           result(null, res);
         }
     });

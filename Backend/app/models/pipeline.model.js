@@ -1,7 +1,7 @@
 const connection = require('./db.js');
 const { Request } = require('tedious');
 const TYPES = require("tedious").TYPES;
-const Helper = require('../helpers/Helper.js');
+const Utils = require('../utils/Utils.js');
 
 const Pipeline = (pipeline) => {
     this.armId = pipeline.armId;

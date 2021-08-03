@@ -1,10 +1,10 @@
 module.exports = app => {
 
-    const windows = require("../helpers/script.windows.js");
+    const windows = require("../utils/script.windows.js");
 
-    const linux = require("../helpers/script.linux.js");
+    const linux = require("../utils/script.linux.js");
 
-    const machine = require("../helpers/script.machine.js");
+    const machine = require("../utils/script.machine.js");
   
     // Execute windows script
     app.get("/windows", windows.executeFile);
@@ -12,7 +12,16 @@ module.exports = app => {
     // Execute linux script
     app.get("/linux", linux.executeFile);
 
-    // Gets services running on this machine
-    app.get("/runningServices", machine.getServices);
+    // Gets status of servers
+    app.post("/serverStatus", machine.getServerStatus);
+
+    // Gets status of service
+    app.post("/serviceStatus", machine.getServiceStatus);
+
+    // Starts services on servers
+    app.post("/startServices", machine.startServices);
+
+    // Stops services on servers
+    app.post("/stopServices", machine.stopServices);
 
   };

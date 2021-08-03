@@ -1,7 +1,7 @@
 const connection = require('./db.js');
 const { Request } = require('tedious');
 const TYPES = require("tedious").TYPES;
-const Helper = require('../helpers/Helper.js');
+const Utils = require('../utils/Utils.js');
 
 const Server = (server) => {
     this.name = server.name;
@@ -11,7 +11,7 @@ const Server = (server) => {
 }
 
 Server.getAllByEnvironmentId = (envId, result) => {
-    let query = 'select Server.serverTypeId, serverId, name, serverType, ipAddress from Server join ServerType on Server.serverTypeId = ServerType.serverTypeId where environmentId = @id';
+    let query = 'select Server.serverTypeId, serverId, name, serverType, ipAddress, variable, value, last_updated, environmentVariablesId from Server join ServerType on Server.serverTypeId = ServerType.serverTypeId left outer join EnvironmentVariables on EnvironmentVariables.value = Server.name where Server.environmentId = @id';
     let params = [{name: 'id', type: TYPES.Int, value: envId}];
     
     const request = new Request(query, (err, rowCount, rows) => {
@@ -21,7 +21,7 @@ Server.getAllByEnvironmentId = (envId, result) => {
             return;
         }
         else {
-          let res = Helper.convertToJsonList(rows);
+          let res = Utils.convertToJsonList(rows);
           result(null, res);
         }
     });

@@ -18,6 +18,10 @@ class DatabaseService {
         return await axiosInstance.post('userPermission', userPermission);
     }
 
+    async getEnvironmentVariablesById(envId) {
+        return await axiosInstance.get('environmentVariables/' + envId);
+    }
+
     async addServerType(serverType) {
         return await axiosInstance.post('serverType', serverType);
     }

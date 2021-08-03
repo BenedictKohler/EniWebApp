@@ -15,6 +15,10 @@ const environmentStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
 
+  button: {
+    background: 'linear-gradient(45deg, #98c1d9 280%, #e0fbfc 90%)'
+  },
+
   appBar: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
